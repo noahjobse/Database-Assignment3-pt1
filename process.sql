@@ -1,34 +1,36 @@
 -- This script processes transactions from the NEW_TRANSACTIONS table.
--- It retrieves transaction details and prints them to the console.
+-- It retrieves unique transaction details and inserts them into TRANSACTION_HISTORY.
 
 DECLARE
     -- Variables to store transaction details
     v_transaction_no      NEW_TRANSACTIONS.Transaction_no%TYPE;
     v_transaction_date    NEW_TRANSACTIONS.Transaction_date%TYPE;
     v_description         NEW_TRANSACTIONS.Description%TYPE;
-    v_account_no          NEW_TRANSACTIONS.Account_no%TYPE;
-    v_transaction_type    NEW_TRANSACTIONS.Transaction_type%TYPE;
-    v_transaction_amount  NEW_TRANSACTIONS.Transaction_amount%TYPE;
 
--- Cursor to fetch data from the table
+-- Cursor to fetch unique transactions (one per Transaction_no)
 CURSOR cur_transactions IS
-    SELECT Transaction_no, Transaction_date, Description, Account_no, Transaction_type, Transaction_amount
-    FROM NEW_TRANSACTIONS;
+    SELECT Transaction_no, Transaction_date, Description
+    FROM NEW_TRANSACTIONS
+    GROUP BY Transaction_no, Transaction_date, Description;
 
 BEGIN
     -- Start processing transactions using a FOR LOOP
     FOR rec IN cur_transactions LOOP
-        -- Assign values from the current row to variables
         v_transaction_no := rec.Transaction_no;
         v_transaction_date := rec.Transaction_date;
         v_description := rec.Description;
-        v_account_no := rec.Account_no;
-        v_transaction_type := rec.Transaction_type;
-        v_transaction_amount := rec.Transaction_amount;
 
-        -- Print details (for debugging)
+        -- Debugging
         DBMS_OUTPUT.PUT_LINE('Processing Transaction No: ' || v_transaction_no);
-        DBMS_OUTPUT.PUT_LINE('Account No: ' || v_account_no || ', Amount: ' || v_transaction_amount || ', Type: ' || v_transaction_type);
+
+        INSERT INTO TRANSACTION_HISTORY (Transaction_no, Transaction_date, Description)
+        VALUES (v_transaction_no, v_transaction_date, v_description);
+
+        -- Debugging
+        DBMS_OUTPUT.PUT_LINE('Inserted Transaction No: ' || v_transaction_no || ' into TRANSACTION_HISTORY.');
     END LOOP;
+
+    COMMIT;
+    DBMS_OUTPUT.PUT_LINE('All transactions processed and committed successfully.');
 END;
 /
