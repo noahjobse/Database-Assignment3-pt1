@@ -39,6 +39,10 @@ BEGIN
                                   ', Type: ' || v_transaction_type ||
                                   ', Amount: ' || v_transaction_amount);
         END LOOP;
+
+        -- Remove transaction from new_transactions table
+        DELETE FROM NEW_TRANSACTIONS
+                WHERE Transaction_no = rec.Transaction_no; 
     END LOOP;
     COMMIT;
     DBMS_OUTPUT.PUT_LINE('All transactions processed and committed successfully.');
