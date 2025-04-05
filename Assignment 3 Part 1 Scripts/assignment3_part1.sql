@@ -1,3 +1,14 @@
+/*
+ * Assignment 3 Part 1 - PL/SQL Double-Entry Transaction Processor
+ * Author: Noah Jobse, Jazib Rao, Jacob Jobse, Rasanpreet Kaur
+ * Institution: Southern Alberta Institute of Technology
+ * Date: 2025-04-04
+ * Description:
+ *   Processes transactions from NEW_TRANSACTIONS by inserting into
+ *   TRANSACTION_HISTORY and TRANSACTION_DETAIL, updating ACCOUNT balances,
+ *   and removing processed transactions. Assuming clean data.
+ */
+
 -- Remove for use with Apex
 SET SERVEROUTPUT ON;
 
